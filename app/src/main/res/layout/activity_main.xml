@@ -9,41 +9,109 @@
     android:orientation="vertical"
     tools:context=".MainActivity" >
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        app:srcCompat="@android:drawable/arrow_down_float" />
+    <LinearLayout
+        android:id="@+id/zoneInfo"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"></LinearLayout>
 
     <LinearLayout
         android:id="@+id/zonePile"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="4"
         android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/rangeePile1"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:orientation="horizontal">
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:id="@+id/pileDescendante1"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_margin="10dp"
+                    app:srcCompat="@android:drawable/arrow_down_float" />
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="100dp"
+                    android:layout_height="140dp"
+                    android:background="#CFA6A6"
+                    android:text="98"
+                    android:textSize="18dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/pileDescendante2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:orientation="horizontal"></LinearLayout>
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/rangeePile2"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"></LinearLayout>
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/pileAscendante1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/pileAscendante2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal"></LinearLayout>
+
+        </LinearLayout>
+
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/zoneMain"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"></LinearLayout>
+        android:layout_height="0dp"
+        android:layout_weight="4"
+        android:background="#347865"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/rangeeMain1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"></LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/rangeeMain2"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"></LinearLayout>
+
+    </LinearLayout>
 
 </LinearLayout>
