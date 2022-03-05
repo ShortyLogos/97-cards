@@ -30,14 +30,9 @@ public class Jeu {
         return jeu;
     }
 
-    public Carte pigerCarte(Main main, TextView t) {
+    public Carte pigerCarte() {
         Carte c = jeu.remove(0);
-        main.ajouterCarte(c);
         nbCartes--;
-
-        // On actualise le nombre de cartes du paquet chaque fois qu'on en pige une
-        // grâce au TextView passé en paramètre
-        t.setText(String.valueOf(nbCartes));
 
         return  c;
     }

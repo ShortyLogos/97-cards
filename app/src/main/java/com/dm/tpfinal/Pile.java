@@ -4,9 +4,9 @@ public class Pile {
     private Carte carteActive;
     private boolean ascendante;
 
-    public Pile(boolean ascendante) {
-        carteActive = null;
+    public Pile(boolean ascendante, Carte carteActive) {
         this.ascendante = ascendante;
+        this.carteActive = carteActive;
     }
 
     public Carte getCarteActive() {
