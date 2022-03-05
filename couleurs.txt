@@ -1,0 +1,8 @@
+vert/bleu : #29856B
+gris/bleu : #374850
+blanc cassé : #EFEDDC
+
+orange : #EC952A
+saumon : #F37152
+rosé : #E84D3D
+rouge : #D62D37

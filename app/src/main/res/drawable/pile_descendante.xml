@@ -9,7 +9,7 @@
         android:name="triableGroup">
         <path
             android:name="triangle"
-            android:fillColor="#EFEDDC"
+            android:fillColor="#8AA993"
             android:pathData="M0,0 L100,0 L50,500 z" />
 
     </group>
