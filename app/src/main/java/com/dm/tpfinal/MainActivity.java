@@ -26,16 +26,13 @@ public class MainActivity extends AppCompatActivity {
 
     TextView nbCartes;
     LinearLayout zonePile;
+    LinearLayout pileAscendante1;
+    LinearLayout pileAscendante2;
+    LinearLayout pileDescendante1;
+    LinearLayout pileDescendante2;
+    LinearLayout zoneMain;
     LinearLayout rangeeMain1;
     LinearLayout rangeeMain2;
-    LinearLayout LLpileAsc1;
-    LinearLayout LLpileAsc2;
-    LinearLayout LLpileDes1;
-    LinearLayout LLpileDes2;
-    TextView carteAscendante1;
-    TextView carteAscendante2;
-    TextView carteDescendante1;
-    TextView carteDescendante2;
 
     Partie partie;
     Jeu jeu;
@@ -45,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     Pile pileAsc2;
     Pile pileDes1;
     Pile pileDes2;
+    Pile pileActive;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -56,18 +54,14 @@ public class MainActivity extends AppCompatActivity {
         nbCartes = findViewById(R.id.nbCartes);
 
         // On récupère les LinearLayout qui contiennent les différentes piles
-        LLpileAsc1 = findViewById(R.id.pileAscendante1);
-        LLpileAsc2 = findViewById(R.id.pileAscendante2);
-        LLpileDes1 = findViewById(R.id.pileDescendante1);
-        LLpileDes2 = findViewById(R.id.pileDescendante2);
-
-        // On récupère les TextView des cartes initiales des piles pour les gérer éventuellement
-        carteAscendante1 = findViewById(R.id.carteAscendante1);
-        carteAscendante2 = findViewById(R.id.carteAscendante2);
-        carteDescendante1 = findViewById(R.id.carteDescendante1);
-        carteDescendante2 = findViewById(R.id.carteDescendante2);
+        zonePile = findViewById(R.id.zonePile);
+        pileAscendante1 = findViewById(R.id.pileAscendante1);
+        pileAscendante2 = findViewById(R.id.pileAscendante2);
+        pileDescendante1 = findViewById(R.id.pileDescendante1);
+        pileDescendante2 = findViewById(R.id.pileDescendante2);
 
         // Zones de la main
+        zoneMain = findViewById(R.id.zoneMain);
         rangeeMain1 = findViewById(R.id.rangeeMain1);
         rangeeMain2 = findViewById(R.id.rangeeMain2);
 
@@ -81,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
         pileDes2 = new Pile(false, new Carte(98));
 
         // Création d'un vecteur de piles qu'on ajoutera à l'objet Partie
+        // afin de pouvoir vérifier après chaque coup si la partie est dans un cul-de-sac
         Vector<Pile> piles = new Vector<Pile>();
         piles.add(pileAsc1);
         piles.add(pileAsc2);
@@ -112,21 +107,22 @@ public class MainActivity extends AppCompatActivity {
         Ecouteur ec = new Ecouteur();
 
         // Inscription des sources à l'écouteur
-        // Rangée main 1
-        for (int carte = 0; carte < rangeeMain1.getChildCount(); carte++) {
-            CarteView cv = (CarteView)rangeeMain1.getChildAt(carte);
-            cv.setOnTouchListener(ec);
-        }
-        // Rangée main 2
-        for (int carte = 0; carte < rangeeMain2.getChildCount(); carte++) {
-            CarteView cv = (CarteView)rangeeMain2.getChildAt(carte);
-            cv.setOnTouchListener(ec);
+        // Main
+        for (int i = 0; i < zoneMain.getChildCount(); i++) {
+            LinearLayout rangeeMain = (LinearLayout)zoneMain.getChildAt(i);
+            for (int j = 0; j < rangeeMain.getChildCount(); j++) {
+                CarteView cv = (CarteView)rangeeMain.getChildAt(j);
+                cv.setOnTouchListener(ec);
+            }
         }
         // Piles
-        LLpileAsc1.setOnDragListener(ec);
-        LLpileAsc2.setOnDragListener(ec);
-        LLpileDes1.setOnDragListener(ec);
-        LLpileDes2.setOnDragListener(ec);
+        for (int i = 0; i < zonePile.getChildCount(); i++) {
+            LinearLayout rangeePile = (LinearLayout)zonePile.getChildAt(i);
+            for (int j = 0; j < rangeePile.getChildCount(); j++) {
+                LinearLayout pile = (LinearLayout)rangeePile.getChildAt(j);
+                pile.setOnDragListener(ec);
+            }
+        }
 
         // Création de l'objet Partie
         partie = new Partie(piles);
@@ -134,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
 
     private class Ecouteur implements View.OnDragListener, View.OnTouchListener {
 
+        @SuppressLint("ClickableViewAccessibility")
         @Override
         public boolean onDrag(View source, DragEvent dragEvent) {
             CarteView carte = (CarteView) dragEvent.getLocalState(); // la carte
@@ -143,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
 
                 case DragEvent.ACTION_DRAG_ENTERED:
-                    source.setBackgroundColor(Color.BLUE);
+                    source.setBackgroundColor(Color.parseColor("#7729856B"));
                     break;
 
                 case DragEvent.ACTION_DRAG_EXITED:
@@ -152,14 +149,45 @@ public class MainActivity extends AppCompatActivity {
 
                 case DragEvent.ACTION_DROP:
                     source.setBackgroundColor(Color.TRANSPARENT);
-                    LinearLayout p = (LinearLayout)carte.getParent(); // Récupère le parent conteneur d'origine
-                    p.removeView(carte); // Enlève la carte du LinearLayout d'origine
-                    LinearLayout pileActive = (LinearLayout)source;
-                    pileActive.addView(carte);
-                    break;
+                    boolean legal = false;
+                    int indexView = 0;
+                    LinearLayout pile = (LinearLayout)source;
 
-                 case DragEvent.ACTION_DRAG_ENDED:
-                     carte.setVisibility(View.VISIBLE);
+                    // Vérification de la légalité du coup
+                    // Nécessaire de passer par une série de if, puisqu'on ne peut pas définir
+                    // une sous-classe de LinearLayout auquel on ajouterait une variable d'instance Pile
+                    if (pile.equals(pileAscendante1))
+                        pileActive = pileAsc1;
+                    else if (pile.equals(pileAscendante2))
+                        pileActive = pileAsc2;
+                    else if (pile.equals(pileDescendante1))
+                        pileActive = pileDes1;
+                    else if (pile.equals(pileDescendante2))
+                        pileActive = pileDes2;
+
+                    legal = pileActive.isPossible(carte.getCarte());
+
+                    // Si le coup est permis, on remplace la carte active de la pile
+                    if (legal) {
+                        pileActive.setCarteActive(carte.getCarte());
+                        LinearLayout p = (LinearLayout)carte.getParent(); // Récupère le parent conteneur d'origine
+                        p.removeView(carte); // Enlève la carte du LinearLayout d'origine
+
+                        for (int i = 0; i < pile.getChildCount(); i++) {
+                            if (pile.getChildAt(i) instanceof TextView) {
+                                View v = pile.getChildAt(i);
+                                indexView = pile.indexOfChild(v);
+                            }
+                        }
+
+                        remplacerCarte(pile, carte, indexView);
+                        carte.setOnTouchListener(null);
+
+                        break;
+                    }
+
+                case DragEvent.ACTION_DRAG_ENDED:
+                    carte.setVisibility(View.VISIBLE);
 
                 default:
                     break;
@@ -219,5 +247,26 @@ public class MainActivity extends AppCompatActivity {
         public Carte getCarte() {
             return carte;
         }
+    }
+
+    public void refaireMain(Main main, Jeu jeu) {
+        while (main.getNbCartes() < main.getLimite()) {
+
+            Carte c = jeu.pigerCarte();
+            main.ajouterCarte(c);
+            CarteView carteView = new CarteView(this, c);
+
+            if (rangeeMain1.getChildCount() < (main.getLimite()/2)) {
+                rangeeMain1.addView(carteView);
+            }
+            else {
+                rangeeMain2.addView(carteView);
+            }
+        }
+    }
+
+    public void remplacerCarte(LinearLayout pile, CarteView carte, int indexView) {
+        pile.removeViewAt(indexView);
+        pile.addView(carte, indexView);
     }
 }

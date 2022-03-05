@@ -1,6 +1,8 @@
 package com.dm.tpfinal;
 
 import android.content.Context;
+import android.view.View;
+import android.widget.LinearLayout;
 
 // Classe d'utilitaires utilisés au sein du projet
 public class Utils {
@@ -9,5 +11,4 @@ public class Utils {
         float px = dp * context.getResources().getDisplayMetrics().density;
         return (int)px;
     }
-
 }

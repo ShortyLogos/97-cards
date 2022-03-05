@@ -9,6 +9,7 @@ public class Main {
     private int seuilPige;
 
     public Main(int limite) {
+        nbCartes = 0;
         main = new Vector<Carte>(limite);
         this.limite = limite;
     }
@@ -32,13 +33,13 @@ public class Main {
         nbCartes = main.size();
     }
 
-    public void refaireMain(Jeu jeu) {
-        if (nbCartes <= seuilPige) {
-            while (nbCartes < limite) {
-                ajouterCarte(jeu.pigerCarte());
-            }
-        }
-    }
+//    public void refaireMain(Jeu jeu) {
+//        if (nbCartes <= seuilPige) {
+//            while (nbCartes < limite) {
+//                ajouterCarte(jeu.pigerCarte());
+//            }
+//        }
+//    }
 
     public void retirerCarte(Carte c) {
         main.remove(c);
