@@ -5,10 +5,11 @@ import java.util.Vector;
 public class Main {
     private Vector<Carte> main;
     private int nbCartes;
+    private int limite;
 
-    public Main(Vector<Carte> main, int nbCartes) {
-        this.main = main;
-        this.nbCartes = nbCartes;
+    public Main(int limite) {
+        main = new Vector<Carte>(limite);
+        this.limite = limite;
     }
 
     public Vector<Carte> getMain() {
@@ -23,7 +24,15 @@ public class Main {
         return nbCartes;
     }
 
-    public void setNbCartes(int nbCartes) {
-        this.nbCartes = nbCartes;
+    public int getLimite() { return limite; }
+
+    public void ajouterCarte(Carte c) {
+        main.add(c);
+        nbCartes++;
     }
+
+    public void retirerCarte(Carte c) {
+        main.remove(c);
+    }
+
 }
