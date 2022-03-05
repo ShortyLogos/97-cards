@@ -3,19 +3,10 @@ package com.dm.tpfinal;
 public class Pile {
     private Carte carteActive;
     private boolean ascendante;
-    private boolean descendante;
-    // variable qui mémorise le nombre de cartes sur la pile ? Pertinente?
 
     public Pile(boolean ascendante) {
         carteActive = null;
-        if (ascendante) {
-            this.ascendante = true;
-            this.descendante = false;
-        }
-        else {
-            this.ascendante = false;
-            this.descendante = true;
-        }
+        this.ascendante = ascendante;
     }
 
     public Carte getCarteActive() {
@@ -30,7 +21,14 @@ public class Pile {
         return ascendante;
     }
 
-    public void setAscendante(boolean ascendante) {
-        this.ascendante = ascendante;
+    public boolean isPossible(Carte c) {
+        if (ascendante) {
+            // Vérification pile ascendante + Règle de 10
+            return c.getValeur() > carteActive.getValeur() || carteActive.getValeur() - 10 == c.getValeur();
+        }
+        else {
+            // Vérification pile descendante + Règle de 10
+            return c.getValeur() < carteActive.getValeur() || carteActive.getValeur() + 10 == c.getValeur();
+        }
     }
 }
