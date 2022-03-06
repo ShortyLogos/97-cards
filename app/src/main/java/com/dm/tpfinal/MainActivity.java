@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -29,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
+    Button btnNouveau;
     TextView nbCartes;
     LinearLayout zonePile;
     LinearLayout pileAscendante1;
@@ -57,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        btnNouveau = findViewById(R.id.btnNouveau);
 
         // Zone d'informations sur la partie en cours
         nbCartes = findViewById(R.id.nbCartes);
@@ -96,7 +100,6 @@ public class MainActivity extends AppCompatActivity {
         // Distribution des 8 cartes aléatoires de départ
         refaireMain(main, jeu);
 
-
         // Affichage du nombre de cartes restantes du Jeu
         nbCartes.setText(String.valueOf(jeu.getNbCartes()));
 
@@ -121,11 +124,13 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        btnNouveau.setOnClickListener(ec);
+
         // Création de l'objet Partie
         partie = new Partie(piles);
     }
 
-    private class Ecouteur implements View.OnDragListener, View.OnTouchListener {
+    private class Ecouteur implements View.OnDragListener, View.OnTouchListener, View.OnClickListener {
 
         @SuppressLint("ClickableViewAccessibility")
         @Override
@@ -200,14 +205,22 @@ public class MainActivity extends AppCompatActivity {
 
         @RequiresApi(api = Build.VERSION_CODES.N)
         @Override
-        public boolean onTouch(View v, MotionEvent event) {
+        public boolean onTouch(View carteView, MotionEvent event) {
 
-            View.DragShadowBuilder dragshadow = new View.DragShadowBuilder(v);
-            v.startDragAndDrop(null, dragshadow, v, View.DRAG_FLAG_OPAQUE);
+            View.DragShadowBuilder dragshadow = new View.DragShadowBuilder(carteView);
+            carteView.startDragAndDrop(null, dragshadow, carteView, View.DRAG_FLAG_OPAQUE);
 
-            v.setVisibility(View.INVISIBLE);
+            carteView.setVisibility(View.INVISIBLE);
 
             return true;
+        }
+
+        @Override
+        public void onClick(View source) {
+            if (source == btnNouveau) {
+                finish();
+                startActivity(getIntent());
+            }
         }
     }
 
@@ -219,12 +232,12 @@ public class MainActivity extends AppCompatActivity {
             super(context);
 
             // Caractéristiques essentielles
-            this.setTextColor(Color.BLACK);
-            this.setTextSize(26);
+            this.setTextColor(Color.parseColor("#062A34"));
+            this.setTextSize(22);
             this.setTypeface(null, Typeface.BOLD);
             this.setBackgroundResource(R.drawable.card_background);
-            int largeur = Utils.conversionDpPx(MainActivity.this, 75);
-            int hauteur = Utils.conversionDpPx(MainActivity.this, 115);
+            int largeur = Utils.conversionDpPx(MainActivity.this, 70);
+            int hauteur = Utils.conversionDpPx(MainActivity.this, 105);
             this.setWidth(largeur);
             this.setHeight(hauteur);
 

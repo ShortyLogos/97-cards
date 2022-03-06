@@ -38,14 +38,6 @@ public class Main {
         nbCartes = main.size();
     }
 
-//    public void refaireMain(Jeu jeu) {
-//        if (nbCartes <= seuilPige) {
-//            while (nbCartes < limite) {
-//                ajouterCarte(jeu.pigerCarte());
-//            }
-//        }
-//    }
-
     public void retirerCarte(Carte c) {
         main.remove(c);
         nbCartes = main.size();
