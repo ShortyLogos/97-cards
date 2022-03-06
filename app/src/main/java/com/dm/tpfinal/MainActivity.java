@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
     Button btnNouveau;
     TextView nbCartes;
+    Chronometer chrono;
     LinearLayout zonePile;
     LinearLayout pileAscendante1;
     LinearLayout pileAscendante2;
@@ -64,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Zone d'informations sur la partie en cours
         nbCartes = findViewById(R.id.nbCartes);
+        chrono = (Chronometer)findViewById(R.id.chrono);
 
         // On récupère les LinearLayout qui contiennent les différentes piles
         zonePile = findViewById(R.id.zonePile);
@@ -128,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Création de l'objet Partie
         partie = new Partie(piles);
+        chrono.start();
     }
 
     private class Ecouteur implements View.OnDragListener, View.OnTouchListener, View.OnClickListener {
@@ -235,11 +239,32 @@ public class MainActivity extends AppCompatActivity {
             this.setTextColor(Color.parseColor("#062A34"));
             this.setTextSize(22);
             this.setTypeface(null, Typeface.BOLD);
-            this.setBackgroundResource(R.drawable.card_background);
             int largeur = Utils.conversionDpPx(MainActivity.this, 70);
             int hauteur = Utils.conversionDpPx(MainActivity.this, 105);
             this.setWidth(largeur);
             this.setHeight(hauteur);
+
+            // Couleur de la carte déterminée par sa valeur
+            if (carte.getValeur() < 10)
+                this.setBackgroundResource(R.drawable.card_background1);
+            else if (carte.getValeur() < 20)
+                this.setBackgroundResource(R.drawable.card_background10);
+            else if (carte.getValeur() < 30)
+                this.setBackgroundResource(R.drawable.card_background20);
+            else if (carte.getValeur() < 40)
+                this.setBackgroundResource(R.drawable.card_background30);
+            else if (carte.getValeur() < 50)
+                this.setBackgroundResource(R.drawable.card_background40);
+            else if (carte.getValeur() < 60)
+                this.setBackgroundResource(R.drawable.card_background50);
+            else if (carte.getValeur() < 70)
+                this.setBackgroundResource(R.drawable.card_background60);
+            else if (carte.getValeur() < 80)
+                this.setBackgroundResource(R.drawable.card_background70);
+            else if (carte.getValeur() < 90)
+                this.setBackgroundResource(R.drawable.card_background80);
+            else if (carte.getValeur() < 100)
+                this.setBackgroundResource(R.drawable.card_background90);
 
             // Marges
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams
