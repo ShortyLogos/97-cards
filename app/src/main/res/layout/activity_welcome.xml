@@ -36,7 +36,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.327">
+        app:layout_constraintVertical_bias="0.316">
 
         <ImageView
             android:id="@+id/imageView5"
@@ -92,9 +92,9 @@
         android:layout_weight="1"
         android:gravity="center"
         android:shadowColor="#000000"
-        android:text="Déric Marchand"
+        android:text="Déric Marchand © 2022"
         android:textColor="@color/info"
-        android:textSize="18sp"
+        android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -106,9 +106,10 @@
         android:id="@+id/btnJouer"
         android:layout_width="295dp"
         android:layout_height="wrap_content"
-        android:background="@color/primaire"
+        android:background="@drawable/background_bouton"
         android:ellipsize="end"
-        android:padding="12dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
         android:text="Jouer"
         android:textColor="@color/primaireFonce"
         android:textSize="24sp"
