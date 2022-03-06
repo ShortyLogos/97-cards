@@ -372,18 +372,3 @@ public class MainActivity extends AppCompatActivity {
 
 }
 
-
-//pileActive.setCarteActive(carte.getCarte());
-//        main.retirerCarte(carte.getCarte());
-//        LinearLayout p = (LinearLayout)carte.getParent(); // Récupère le parent conteneur d'origine
-//        p.removeView(carte); // Enlève la carte du LinearLayout d'origine
-//
-//        for (int i = 0; i < pile.getChildCount(); i++) {
-//        if (pile.getChildAt(i) instanceof TextView) {
-//        View v = pile.getChildAt(i);
-//        indexView = pile.indexOfChild(v);
-//        }
-//        }
-//
-//        remplacerCarte(pile, carte, indexView);
-

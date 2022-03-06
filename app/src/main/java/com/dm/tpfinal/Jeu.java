@@ -19,6 +19,9 @@ public class Jeu {
         }
 
         // On mélange le paquet de cartes lors de sa création
+        // Plusieurs fois pour augmenter l'étendue de la randomisation
+        Collections.shuffle(jeu);
+        Collections.shuffle(jeu);
         Collections.shuffle(jeu);
     }
 
