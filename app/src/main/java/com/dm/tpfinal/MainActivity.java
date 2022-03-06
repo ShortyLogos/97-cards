@@ -31,8 +31,11 @@ import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
+    // Variables globales de nature graphique
+    Button btnReprendre;
     Button btnNouveau;
     TextView nbCartes;
+    TextView score;
     Chronometer chrono;
     LinearLayout zonePile;
     LinearLayout pileAscendante1;
@@ -42,19 +45,24 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout zoneMain;
     LinearLayout rangeeMain1;
     LinearLayout rangeeMain2;
+    CarteView cvJouee;
+    CarteView cvSurPile;
+    int indexCartePile;
+    LinearLayout dernierePile;
 
-    // Besoin en variable globale pour la méthode refaireMain()
-    Ecouteur ec;
-
+    // Variables globales de nature logique
     Partie partie;
     Jeu jeu;
     Main main;
-
     Pile pileAsc1;
     Pile pileAsc2;
     Pile pileDes1;
     Pile pileDes2;
     Pile pileActive;
+    boolean retourPossible;
+
+    // En variable globale pour certaines méthodes de l'Activité
+    Ecouteur ec;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -62,11 +70,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        btnReprendre = findViewById(R.id.btnReprendre);
         btnNouveau = findViewById(R.id.btnNouveau);
 
         // Zone d'informations sur la partie en cours
         nbCartes = findViewById(R.id.nbCartes);
         chrono = (Chronometer)findViewById(R.id.chrono);
+        score = findViewById(R.id.score);
 
         // On récupère les LinearLayout qui contiennent les différentes piles
         zonePile = findViewById(R.id.zonePile);
@@ -101,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
         main = new Main(8);
 
         // Distribution des 8 cartes aléatoires de départ
-        refaireMain(main, jeu);
+        refaireMain();
 
         // Affichage du nombre de cartes restantes du Jeu
         nbCartes.setText(String.valueOf(jeu.getNbCartes()));
@@ -127,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        btnReprendre.setOnClickListener(ec);
         btnNouveau.setOnClickListener(ec);
 
         // Création de l'objet Partie
@@ -156,42 +167,55 @@ public class MainActivity extends AppCompatActivity {
                 case DragEvent.ACTION_DROP:
                     source.setBackgroundColor(Color.TRANSPARENT);
                     boolean legal = false;
-                    int indexView = 0;
-                    LinearLayout pile = (LinearLayout)source;
+                    dernierePile = (LinearLayout)source;
 
                     // Vérification de la légalité du coup
                     // Nécessaire de passer par une série de if, puisqu'on ne peut pas définir
                     // une sous-classe de LinearLayout auquel on ajouterait une variable d'instance Pile
-                    if (pile.equals(pileAscendante1))
+                    if (dernierePile.equals(pileAscendante1))
                         pileActive = pileAsc1;
-                    else if (pile.equals(pileAscendante2))
+                    else if (dernierePile.equals(pileAscendante2))
                         pileActive = pileAsc2;
-                    else if (pile.equals(pileDescendante1))
+                    else if (dernierePile.equals(pileDescendante1))
                         pileActive = pileDes1;
-                    else if (pile.equals(pileDescendante2))
+                    else if (dernierePile.equals(pileDescendante2))
                         pileActive = pileDes2;
 
                     legal = pileActive.isPossible(carte.getCarte());
 
                     // Si le coup est permis, on remplace la carte active de la pile
                     if (legal) {
-                        pileActive.setCarteActive(carte.getCarte());
+                        partie.ajoutSequence(); // On compte le nombre de coups consécutifs pour gérer le bouton Retour
+                        cvSurPile = new CarteView(MainActivity.this, pileActive.getCarteActive());  // On garde en mémoire le CarteView sur la pile dans le cas d'un retour possible
+                        cvJouee = carte;
+
+                        pileActive.setCarteActive(carte.getCarte()); // On remplace le CarteView sur la pile par celui de la carte jouée
                         main.retirerCarte(carte.getCarte());
                         LinearLayout p = (LinearLayout)carte.getParent(); // Récupère le parent conteneur d'origine
-                        p.removeView(carte); // Enlève la carte du LinearLayout d'origine
+                        p.removeView(carte); // Enlève la carte du LinearLayout d'origine (ici la rangée correspondante dans la main)
 
-                        for (int i = 0; i < pile.getChildCount(); i++) {
-                            if (pile.getChildAt(i) instanceof TextView) {
-                                View v = pile.getChildAt(i);
-                                indexView = pile.indexOfChild(v);
+                        for (int i = 0; i < dernierePile.getChildCount(); i++) {
+                            if (dernierePile.getChildAt(i) instanceof TextView) {
+                                View v = dernierePile.getChildAt(i);
+                                indexCartePile = dernierePile.indexOfChild(v);
                             }
                         }
 
-                        remplacerCarte(pile, carte, indexView);
+                        remplacerCarte(dernierePile, carte, indexCartePile);
                         carte.setOnTouchListener(null);
 
+                        retourPossible = partie.isRetourPossible(carte.getCarte(), pileActive.getCarteActive(), pileActive, indexCartePile);
+                        if (retourPossible)
+                            btnReprendre.setTextColor(Color.parseColor("#062A34"));
+                        else {
+                            btnReprendre.setTextColor(getResources().getColor(R.color.reprendreInactif));
+                        }
+
+                        partie.ajoutScore(10);
+                        score.setText(String.valueOf(partie.getScore()));
+
                         if (main.getNbCartes() == main.getSeuilPige()) {
-                            refaireMain(main, jeu);
+                            refaireMain();
                         }
 
                         break;
@@ -225,6 +249,12 @@ public class MainActivity extends AppCompatActivity {
                 finish();
                 startActivity(getIntent());
             }
+            else if (source == btnReprendre) {
+                if (retourPossible) {
+                    btnReprendre.setTextColor(getResources().getColor(R.color.reprendreInactif));
+                    retourArriere();
+                }
+            }
         }
     }
 
@@ -245,7 +275,9 @@ public class MainActivity extends AppCompatActivity {
             this.setHeight(hauteur);
 
             // Couleur de la carte déterminée par sa valeur
-            if (carte.getValeur() < 10)
+            if (carte.getValeur() == 0 || carte.getValeur() == 98)
+                this.setBackgroundResource(R.drawable.card_background_pile);
+            else if (carte.getValeur() < 10)
                 this.setBackgroundResource(R.drawable.card_background1);
             else if (carte.getValeur() < 20)
                 this.setBackgroundResource(R.drawable.card_background10);
@@ -290,30 +322,36 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    public void refaireMain(Main main, Jeu jeu) {
+    public CarteView insererCarteMain(Carte c) {
+
+        main.ajouterCarte(c);
+        CarteView carteView = new CarteView(this, c);
+        carteView.setOnTouchListener(ec);
+
+        Animation fadeIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
+
+        if (rangeeMain1.getChildCount() < (main.getLimite()/2)) {
+            rangeeMain1.addView(carteView);
+        }
+        else {
+            rangeeMain2.addView(carteView);
+        }
+        carteView.startAnimation(fadeIn);
+
+        return carteView;
+    }
+
+    public void refaireMain() {
 
         while (main.getNbCartes() < main.getLimite()) {
 
             if (jeu.getNbCartes() > 0) {
                 Carte c = jeu.pigerCarte();
-                main.ajouterCarte(c);
-                CarteView carteView = new CarteView(this, c);
-                carteView.setOnTouchListener(ec);
-
-                Animation fadeIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
-
-                if (rangeeMain1.getChildCount() < (main.getLimite()/2)) {
-                    rangeeMain1.addView(carteView);
-                    carteView.startAnimation(fadeIn);
-                }
-                else {
-                    rangeeMain2.addView(carteView);
-                    carteView.startAnimation(fadeIn);
-                }
-
-                nbCartes.setText(String.valueOf(jeu.getNbCartes()));
+                insererCarteMain(c);
             }
         }
+
+        nbCartes.setText(String.valueOf(jeu.getNbCartes()));
     }
 
     public void remplacerCarte(LinearLayout pile, CarteView carte, int indexView) {
@@ -321,5 +359,31 @@ public class MainActivity extends AppCompatActivity {
         pile.addView(carte, indexView);
     }
 
+    public void retourArriere() {
+        Carte carteJouee = partie.getCarteJouee();
+
+        remplacerCarte(dernierePile, cvSurPile, indexCartePile);
+        pileActive.setCarteActive(cvSurPile.getCarte());
+        CarteView carteView = insererCarteMain(carteJouee);
+
+        partie.setSequence(0);
+        retourPossible = false;
+    }
+
 }
+
+
+//pileActive.setCarteActive(carte.getCarte());
+//        main.retirerCarte(carte.getCarte());
+//        LinearLayout p = (LinearLayout)carte.getParent(); // Récupère le parent conteneur d'origine
+//        p.removeView(carte); // Enlève la carte du LinearLayout d'origine
+//
+//        for (int i = 0; i < pile.getChildCount(); i++) {
+//        if (pile.getChildAt(i) instanceof TextView) {
+//        View v = pile.getChildAt(i);
+//        indexView = pile.indexOfChild(v);
+//        }
+//        }
+//
+//        remplacerCarte(pile, carte, indexView);
 
