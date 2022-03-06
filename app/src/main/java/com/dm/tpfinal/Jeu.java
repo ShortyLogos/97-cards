@@ -32,7 +32,7 @@ public class Jeu {
 
     public Carte pigerCarte() {
         Carte c = jeu.remove(0);
-        nbCartes--;
+        nbCartes = jeu.size();
 
         return  c;
     }

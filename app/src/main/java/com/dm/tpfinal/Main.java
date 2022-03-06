@@ -10,6 +10,7 @@ public class Main {
 
     public Main(int limite) {
         nbCartes = 0;
+        seuilPige = limite - 2;
         main = new Vector<Carte>(limite);
         this.limite = limite;
     }
@@ -27,6 +28,10 @@ public class Main {
     }
 
     public int getLimite() { return limite; }
+
+    public int getSeuilPige() {
+        return seuilPige;
+    }
 
     public void ajouterCarte(Carte c) {
         main.add(c);

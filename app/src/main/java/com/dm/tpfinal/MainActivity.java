@@ -12,15 +12,20 @@ import android.graphics.drawable.Drawable;
 import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.Vector;
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,6 +38,9 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout zoneMain;
     LinearLayout rangeeMain1;
     LinearLayout rangeeMain2;
+
+    // Besoin en variable globale pour la méthode refaireMain()
+    Ecouteur ec;
 
     Partie partie;
     Jeu jeu;
@@ -86,25 +94,14 @@ public class MainActivity extends AppCompatActivity {
         main = new Main(8);
 
         // Distribution des 8 cartes aléatoires de départ
-        while (main.getNbCartes() < main.getLimite()) {
+        refaireMain(main, jeu);
 
-            Carte c = jeu.pigerCarte();
-            main.ajouterCarte(c);
-            CarteView tvCarte = new CarteView(this, c);
-
-            if (rangeeMain1.getChildCount() < (main.getLimite()/2)) {
-                rangeeMain1.addView(tvCarte);
-            }
-            else {
-                rangeeMain2.addView(tvCarte);
-            }
-        }
 
         // Affichage du nombre de cartes restantes du Jeu
         nbCartes.setText(String.valueOf(jeu.getNbCartes()));
 
         // Création de l'écouteur
-        Ecouteur ec = new Ecouteur();
+        ec = new Ecouteur();
 
         // Inscription des sources à l'écouteur
         // Main
@@ -170,6 +167,7 @@ public class MainActivity extends AppCompatActivity {
                     // Si le coup est permis, on remplace la carte active de la pile
                     if (legal) {
                         pileActive.setCarteActive(carte.getCarte());
+                        main.retirerCarte(carte.getCarte());
                         LinearLayout p = (LinearLayout)carte.getParent(); // Récupère le parent conteneur d'origine
                         p.removeView(carte); // Enlève la carte du LinearLayout d'origine
 
@@ -182,6 +180,10 @@ public class MainActivity extends AppCompatActivity {
 
                         remplacerCarte(pile, carte, indexView);
                         carte.setOnTouchListener(null);
+
+                        if (main.getNbCartes() == main.getSeuilPige()) {
+                            refaireMain(main, jeu);
+                        }
 
                         break;
                     }
@@ -249,18 +251,29 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     public void refaireMain(Main main, Jeu jeu) {
+
         while (main.getNbCartes() < main.getLimite()) {
 
-            Carte c = jeu.pigerCarte();
-            main.ajouterCarte(c);
-            CarteView carteView = new CarteView(this, c);
+            if (jeu.getNbCartes() > 0) {
+                Carte c = jeu.pigerCarte();
+                main.ajouterCarte(c);
+                CarteView carteView = new CarteView(this, c);
+                carteView.setOnTouchListener(ec);
 
-            if (rangeeMain1.getChildCount() < (main.getLimite()/2)) {
-                rangeeMain1.addView(carteView);
-            }
-            else {
-                rangeeMain2.addView(carteView);
+                Animation fadeIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
+
+                if (rangeeMain1.getChildCount() < (main.getLimite()/2)) {
+                    rangeeMain1.addView(carteView);
+                    carteView.startAnimation(fadeIn);
+                }
+                else {
+                    rangeeMain2.addView(carteView);
+                    carteView.startAnimation(fadeIn);
+                }
+
+                nbCartes.setText(String.valueOf(jeu.getNbCartes()));
             }
         }
     }
@@ -269,4 +282,6 @@ public class MainActivity extends AppCompatActivity {
         pile.removeViewAt(indexView);
         pile.addView(carte, indexView);
     }
+
 }
+
