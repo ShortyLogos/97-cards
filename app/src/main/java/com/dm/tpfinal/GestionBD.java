@@ -41,7 +41,7 @@ public class GestionBD extends SQLiteOpenHelper {
     public int recupererScore() {
         int meilleurScore = 0;
 
-        Cursor cursor = database.rawQuery("SELECT score FROM joueur", null);
+        Cursor cursor = database.rawQuery("SELECT meilleur_score FROM joueur", null);
         cursor.moveToNext();
 
         meilleurScore = cursor.getInt(0);
@@ -55,8 +55,7 @@ public class GestionBD extends SQLiteOpenHelper {
     // Méthode pour remplacer meilleur score
     public void changerScore(int nouveauScore) {
         String[] tab = {String.valueOf(nouveauScore)};
-        Cursor cursor = database.rawQuery("UPDATE joueur SET meilleur_score =?", tab);
-        cursor.moveToNext();
+        Cursor cursor = database.rawQuery("UPDATE joueur SET meilleur_score =? WHERE id=1", tab);
     }
 
     // Méthode pour ajouter une partie au nombre de parties jouées

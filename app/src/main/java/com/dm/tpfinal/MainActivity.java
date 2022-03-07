@@ -32,6 +32,9 @@ import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
+    // Singleton de gestion de BD
+    GestionBD dbInstance;
+
     // Variables globales de nature graphique
     Button btnReprendre;
     Button btnNouveau;
@@ -65,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
     int valeurLimite;
     boolean retourPossible;
     boolean victoire;
+    boolean record;
 
     // En variable globale pour certaines méthodes de l'Activité
     Ecouteur ec;
@@ -74,6 +78,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        dbInstance = GestionBD.getInstance(this);
+        dbInstance.connecterBD();
 
         btnReprendre = findViewById(R.id.btnReprendre);
         btnNouveau = findViewById(R.id.btnNouveau);
@@ -156,6 +163,12 @@ public class MainActivity extends AppCompatActivity {
         chrono.start();
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        dbInstance.deconnecterBD();
+    }
+
     private class Ecouteur implements View.OnDragListener, View.OnTouchListener, View.OnClickListener {
 
         @SuppressLint("ClickableViewAccessibility")
@@ -234,9 +247,16 @@ public class MainActivity extends AppCompatActivity {
                             if (main.getNbCartes() == 0)
                                 // Si aucun coup possible car la main est vide, c'est une victoire
                                 victoire = true;
+                                record = false;
+                            int meilleurScore = dbInstance.recupererScore();
+//                            if (partie.getScore() > meilleurScore) {
+////                                dbInstance.changerScore(meilleurScore);
+//                                record = true;
+//                            }
                             Intent i = new Intent(MainActivity.this, EndActivity.class);
                             i.putExtra("victoire", victoire);
                             i.putExtra("score", partie.getScore());
+                            i.putExtra("record", record);
                             finish();
                             startActivity(i);
                         }
