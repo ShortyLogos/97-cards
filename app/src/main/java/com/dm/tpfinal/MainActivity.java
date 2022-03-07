@@ -168,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
 
                 case DragEvent.ACTION_DRAG_ENTERED:
-                    source.setBackgroundColor(Color.parseColor("#7729856B"));
+                    source.setBackground(getDrawable(R.drawable.background_hover));
                     break;
 
                 case DragEvent.ACTION_DRAG_EXITED:
