@@ -1,6 +1,8 @@
 package com.dm.tpfinal;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -22,11 +24,44 @@ public class GestionBD extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE score (_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "score INTEGER)");
+        db.execSQL("CREATE TABLE joueur (_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "meilleur_score INTEGER," +
+                "nb_partie INTEGER," +
+                "nb_victoire INTEGER)");
+
+        ContentValues cv = new ContentValues();
+        cv.put("meilleur_score", 0);
+        cv.put("nb_partie", 0);
+        cv.put("nb_victoire", 0);
+
+        db.insert("joueur", null, cv);
     }
 
-    // À coder : méthode pour ajouter score et une autre pour récupérer meilleurs scores
+    // Méthode pour récupérer meilleur score
+    public int recupererScore() {
+        int meilleurScore = 0;
+
+        Cursor cursor = database.rawQuery("SELECT score FROM joueur", null);
+        cursor.moveToNext();
+
+        meilleurScore = cursor.getInt(0);
+        return  meilleurScore;
+    }
+
+    // Méthode pour récupérer nombre de parties
+
+    // Méthode pour récupérer nombre de victoires
+
+    // Méthode pour remplacer meilleur score
+    public void changerScore(int nouveauScore) {
+        String[] tab = {String.valueOf(nouveauScore)};
+        Cursor cursor = database.rawQuery("UPDATE joueur SET meilleur_score =?", tab);
+        cursor.moveToNext();
+    }
+
+    // Méthode pour ajouter une partie au nombre de parties jouées
+
+    // Méthode pour ajouter une victoire dans la base de données
 
     public void connecterBD() { database = this.getWritableDatabase(); }
 
@@ -34,6 +69,6 @@ public class GestionBD extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE score");
+        db.execSQL("DROP TABLE joueur");
     }
 }
