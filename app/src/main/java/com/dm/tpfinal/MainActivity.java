@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -42,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout pileAscendante2;
     LinearLayout pileDescendante1;
     LinearLayout pileDescendante2;
+    TextView carteDescendante1;
+    TextView carteDescendante2;
     LinearLayout zoneMain;
     LinearLayout rangeeMain1;
     LinearLayout rangeeMain2;
@@ -59,7 +62,9 @@ public class MainActivity extends AppCompatActivity {
     Pile pileDes1;
     Pile pileDes2;
     Pile pileActive;
+    int valeurLimite;
     boolean retourPossible;
+    boolean victoire;
 
     // En variable globale pour certaines méthodes de l'Activité
     Ecouteur ec;
@@ -79,11 +84,14 @@ public class MainActivity extends AppCompatActivity {
         score = findViewById(R.id.score);
 
         // On récupère les LinearLayout qui contiennent les différentes piles
+        // ainsi que les deux plus hautes cartes pour adapter leur valeur au besoin
         zonePile = findViewById(R.id.zonePile);
         pileAscendante1 = findViewById(R.id.pileAscendante1);
         pileAscendante2 = findViewById(R.id.pileAscendante2);
         pileDescendante1 = findViewById(R.id.pileDescendante1);
         pileDescendante2 = findViewById(R.id.pileDescendante2);
+        carteDescendante1 = findViewById(R.id.carteDescendante1);
+        carteDescendante2 = findViewById(R.id.carteDescendante2);
 
         // Zones de la main
         zoneMain = findViewById(R.id.zoneMain);
@@ -92,12 +100,15 @@ public class MainActivity extends AppCompatActivity {
 
         // Création du paquet de cartes
         jeu = new Jeu(97, this);
+        valeurLimite = jeu.getNbInitial() + 1;
 
         // Création des piles avec leur carte initiale respective
         pileAsc1 = new Pile(true, new Carte(0));
         pileAsc2 = new Pile(true, new Carte(0));
-        pileDes1 = new Pile(false, new Carte(98));
-        pileDes2 = new Pile(false, new Carte(98));
+        pileDes1 = new Pile(false, new Carte(valeurLimite));
+        pileDes2 = new Pile(false, new Carte(valeurLimite));
+        carteDescendante1.setText(String.valueOf(valeurLimite));
+        carteDescendante2.setText(String.valueOf(valeurLimite));
 
         // Création d'un vecteur de piles qu'on ajoutera à l'objet Partie
         // afin de pouvoir vérifier après chaque coup si la partie est dans un cul-de-sac
@@ -206,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
 
                         retourPossible = partie.isRetourPossible(carte.getCarte(), pileActive.getCarteActive(), pileActive, indexCartePile);
                         if (retourPossible)
-                            btnReprendre.setTextColor(Color.parseColor("#062A34"));
+                            btnReprendre.setTextColor(getResources().getColor(R.color.boutonTexte));
                         else {
                             btnReprendre.setTextColor(getResources().getColor(R.color.reprendreInactif));
                         }
@@ -216,6 +227,18 @@ public class MainActivity extends AppCompatActivity {
 
                         if (main.getNbCartes() == main.getSeuilPige()) {
                             refaireMain();
+                        }
+
+                        // Vérification d'un coup possible après pige
+                        if (!partie.isCoupPossible(main)) {
+                            if (main.getNbCartes() == 0)
+                                // Si aucun coup possible car la main est vide, c'est une victoire
+                                victoire = true;
+                            Intent i = new Intent(MainActivity.this, EndActivity.class);
+                            i.putExtra("victoire", victoire);
+                            i.putExtra("score", partie.getScore());
+                            finish();
+                            startActivity(i);
                         }
 
                         break;
@@ -275,7 +298,7 @@ public class MainActivity extends AppCompatActivity {
             this.setHeight(hauteur);
 
             // Couleur de la carte déterminée par sa valeur
-            if (carte.getValeur() == 0 || carte.getValeur() == 98)
+            if (carte.getValeur() == 0 || carte.getValeur() == valeurLimite)
                 this.setBackgroundResource(R.drawable.card_background_pile);
             else if (carte.getValeur() < 10)
                 this.setBackgroundResource(R.drawable.card_background1);
@@ -295,7 +318,7 @@ public class MainActivity extends AppCompatActivity {
                 this.setBackgroundResource(R.drawable.card_background70);
             else if (carte.getValeur() < 90)
                 this.setBackgroundResource(R.drawable.card_background80);
-            else if (carte.getValeur() < 100)
+            else
                 this.setBackgroundResource(R.drawable.card_background90);
 
             // Marges
@@ -348,6 +371,9 @@ public class MainActivity extends AppCompatActivity {
             if (jeu.getNbCartes() > 0) {
                 Carte c = jeu.pigerCarte();
                 insererCarteMain(c);
+            }
+            else {
+                break;
             }
         }
 

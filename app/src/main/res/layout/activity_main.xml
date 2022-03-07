@@ -14,9 +14,9 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.65"
-        android:background="@color/primaire"
+        android:background="@color/primairePale"
         android:text="Nouvelle Partie"
-        android:textColor="#062A34"
+        android:textColor="@color/boutonTexte"
         android:textSize="16sp"
         android:textStyle="bold" />
 
@@ -154,7 +154,7 @@
                     android:paddingBottom="10dp"
                     android:text="0"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                    android:textColor="#062A34"
+                    android:textColor="@color/primaireFonce"
                     android:textSize="22sp"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -180,7 +180,7 @@
                     android:paddingBottom="10dp"
                     android:text="0"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                    android:textColor="#062A34"
+                    android:textColor="@color/primaireFonce"
                     android:textSize="22sp"
                     android:textStyle="bold" />
 
@@ -231,7 +231,7 @@
                     android:paddingBottom="10dp"
                     android:text="98"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                    android:textColor="#062A34"
+                    android:textColor="@color/primaireFonce"
                     android:textSize="22sp"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -257,7 +257,7 @@
                     android:paddingBottom="10dp"
                     android:text="98"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                    android:textColor="#062A34"
+                    android:textColor="@color/primaireFonce"
                     android:textSize="22sp"
                     android:textStyle="bold" />
 

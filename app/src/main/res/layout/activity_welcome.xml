@@ -104,22 +104,22 @@
 
     <Button
         android:id="@+id/btnJouer"
-        android:layout_width="295dp"
+        android:layout_width="296dp"
         android:layout_height="wrap_content"
         android:background="@drawable/background_bouton"
         android:ellipsize="end"
         android:paddingTop="15dp"
         android:paddingBottom="15dp"
         android:text="Jouer"
-        android:textColor="@color/primaireFonce"
+        android:textColor="@color/boutonTexte"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.489"
+        app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.625" />
+        app:layout_constraintVertical_bias="0.63" />
 
     <TextView
         android:id="@+id/nbPartieLabel"

@@ -8,10 +8,12 @@ import java.util.Vector;
 
 public class Jeu {
     private int nbCartes;
+    private final int nbInitial;
     private Vector<Carte> jeu;
 
     public Jeu(int nbCartes, Context context) {
         this.nbCartes = nbCartes;
+        this.nbInitial = nbCartes;
         jeu = new Vector<Carte>(nbCartes);
 
         for (int i = 1; i <= nbCartes; i++) {
@@ -28,6 +30,8 @@ public class Jeu {
     public int getNbCartes() {
         return nbCartes;
     }
+
+    public int getNbInitial() { return nbInitial; }
 
     public Vector<Carte> getJeu() {
         return jeu;
