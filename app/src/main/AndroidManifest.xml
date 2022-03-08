@@ -23,6 +23,7 @@
         </activity>
         <activity
             android:name=".EndActivity"
+            android:parentActivityName=".WelcomeActivity"
             android:exported="true">
         </activity>
     </application>

@@ -246,8 +246,10 @@ public class MainActivity extends AppCompatActivity {
                                 victoire = true;
                                 record = false;
 
-                            boolean resultat = dbInstance.getDatabase().isOpen();
-                            dbInstance.connecterBD();
+                            if (!dbInstance.getDatabase().isOpen()) {
+                                dbInstance.connecterBD();
+                            }
+
                             int meilleurScore = dbInstance.recupererScore();
                             if (partie.getScore() > meilleurScore) {
                                 dbInstance.changerScore(partie.getScore());

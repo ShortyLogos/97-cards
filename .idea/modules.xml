@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="ProjectModuleManager">
-    <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/tpfinal.iml" filepath="$PROJECT_DIR$/.idea/modules/tpfinal.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/tpfinal.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/tpfinal.app.iml" />
-    </modules>
-  </component>
-</project>
