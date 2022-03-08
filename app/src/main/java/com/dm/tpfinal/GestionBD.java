@@ -30,12 +30,14 @@ public class GestionBD extends SQLiteOpenHelper {
                 "nb_victoire INTEGER)");
 
         ContentValues cv = new ContentValues();
-        cv.put("meilleur_score", 0);
+        cv.put("meilleur_score", 5);
         cv.put("nb_partie", 0);
         cv.put("nb_victoire", 0);
 
         db.insert("joueur", null, cv);
     }
+
+    
 
     // Méthode pour récupérer meilleur score
     public int recupererScore() {
@@ -45,6 +47,7 @@ public class GestionBD extends SQLiteOpenHelper {
         cursor.moveToNext();
 
         meilleurScore = cursor.getInt(0);
+        cursor.close();
         return  meilleurScore;
     }
 
@@ -53,9 +56,17 @@ public class GestionBD extends SQLiteOpenHelper {
     // Méthode pour récupérer nombre de victoires
 
     // Méthode pour remplacer meilleur score
-    public void changerScore(int nouveauScore) {
-        String[] tab = {String.valueOf(nouveauScore)};
-        Cursor cursor = database.rawQuery("UPDATE joueur SET meilleur_score =? WHERE id=1", tab);
+//    public void changerScore(int nouveauScore) {
+//        String[] tab = {String.valueOf(nouveauScore)};
+//        Cursor cursor = database.rawQuery("UPDATE joueur SET meilleur_score =? WHERE id=1", tab);
+//    }
+
+    public boolean changerScore(int nouveauScore) {
+        ContentValues cv = new ContentValues();
+        cv.put("meilleur_score", nouveauScore);
+        database.update("joueur", cv, null, null);
+
+        return true;
     }
 
     // Méthode pour ajouter une partie au nombre de parties jouées

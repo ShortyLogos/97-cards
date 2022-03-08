@@ -23,12 +23,10 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.Chronometer;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.Vector;
-import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -161,6 +159,8 @@ public class MainActivity extends AppCompatActivity {
         // Création de l'objet Partie
         partie = new Partie(piles);
         chrono.start();
+
+
     }
 
     @Override
@@ -248,11 +248,15 @@ public class MainActivity extends AppCompatActivity {
                                 // Si aucun coup possible car la main est vide, c'est une victoire
                                 victoire = true;
                                 record = false;
+
+
+
+                            dbInstance.connecterBD();
                             int meilleurScore = dbInstance.recupererScore();
-//                            if (partie.getScore() > meilleurScore) {
-////                                dbInstance.changerScore(meilleurScore);
-//                                record = true;
-//                            }
+                            if (partie.getScore() > meilleurScore) {
+                                dbInstance.changerScore(meilleurScore);
+                                record = true;
+                            }
                             Intent i = new Intent(MainActivity.this, EndActivity.class);
                             i.putExtra("victoire", victoire);
                             i.putExtra("score", partie.getScore());
