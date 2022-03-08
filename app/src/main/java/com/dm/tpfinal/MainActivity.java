@@ -78,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         dbInstance = GestionBD.getInstance(this);
-        dbInstance.connecterBD();
 
         btnReprendre = findViewById(R.id.btnReprendre);
         btnNouveau = findViewById(R.id.btnNouveau);
@@ -159,8 +158,6 @@ public class MainActivity extends AppCompatActivity {
         // Création de l'objet Partie
         partie = new Partie(piles);
         chrono.start();
-
-
     }
 
     @Override
@@ -249,12 +246,11 @@ public class MainActivity extends AppCompatActivity {
                                 victoire = true;
                                 record = false;
 
-
-
+                            boolean resultat = dbInstance.getDatabase().isOpen();
                             dbInstance.connecterBD();
                             int meilleurScore = dbInstance.recupererScore();
                             if (partie.getScore() > meilleurScore) {
-                                dbInstance.changerScore(meilleurScore);
+                                dbInstance.changerScore(partie.getScore());
                                 record = true;
                             }
                             Intent i = new Intent(MainActivity.this, EndActivity.class);
@@ -419,6 +415,5 @@ public class MainActivity extends AppCompatActivity {
         partie.setSequence(0);
         retourPossible = false;
     }
-
 }
 

@@ -37,8 +37,6 @@ public class GestionBD extends SQLiteOpenHelper {
         db.insert("joueur", null, cv);
     }
 
-    
-
     // Méthode pour récupérer meilleur score
     public int recupererScore() {
         int meilleurScore = 0;
@@ -64,7 +62,7 @@ public class GestionBD extends SQLiteOpenHelper {
     public boolean changerScore(int nouveauScore) {
         ContentValues cv = new ContentValues();
         cv.put("meilleur_score", nouveauScore);
-        database.update("joueur", cv, null, null);
+        database.update("joueur", cv, "_id = 1", null);
 
         return true;
     }
@@ -80,5 +78,9 @@ public class GestionBD extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE joueur");
+    }
+
+    public SQLiteDatabase getDatabase() {
+        return database;
     }
 }
