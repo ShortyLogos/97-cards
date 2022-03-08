@@ -57,6 +57,28 @@ public class Partie {
         this.score += score;
     }
 
+    public int calculScore(int tempsNouvelleCarte, int tempsAncienneCarte) {
+        int score = 10;
+        int tempsEcoule = tempsNouvelleCarte - tempsAncienneCarte;
+        if (tempsEcoule < 3) {
+            score += 100;
+        }
+        else if (tempsEcoule < 4) {
+            score += 75;
+        }
+        else if (tempsEcoule < 7) {
+            score += 50;
+        }
+        else if (tempsEcoule < 10) {
+            score += 30;
+        }
+        else if (tempsEcoule < 15) {
+            score += 10;
+        }
+
+        return score;
+    }
+
     public boolean isCoupPossible(Main main) {
         for (Pile pile : piles) {
             for (Carte carte : main.getMain()) {

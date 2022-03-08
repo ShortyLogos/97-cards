@@ -64,6 +64,9 @@ public class MainActivity extends AppCompatActivity {
     Pile pileDes2;
     Pile pileActive;
     int valeurLimite;
+    int tempsEcoule;
+    int tempsDerniereCarte = 0;
+    int tempsNouvelleCarte;
     boolean retourPossible;
     boolean victoire;
     boolean record;
@@ -154,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
 
         btnReprendre.setOnClickListener(ec);
         btnNouveau.setOnClickListener(ec);
+        chrono.setOnChronometerTickListener(ec);
 
         // Création de l'objet Partie
         partie = new Partie(piles);
@@ -166,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
         dbInstance.deconnecterBD();
     }
 
-    private class Ecouteur implements View.OnDragListener, View.OnTouchListener, View.OnClickListener {
+    private class Ecouteur implements View.OnDragListener, View.OnTouchListener, View.OnClickListener, Chronometer.OnChronometerTickListener {
 
         @SuppressLint("ClickableViewAccessibility")
         @Override
@@ -232,7 +236,11 @@ public class MainActivity extends AppCompatActivity {
                             btnReprendre.setTextColor(getResources().getColor(R.color.reprendreInactif));
                         }
 
-                        partie.ajoutScore(10);
+                        tempsNouvelleCarte = tempsEcoule;
+                        int addScore = partie.calculScore(tempsNouvelleCarte, tempsDerniereCarte);
+                        tempsDerniereCarte = tempsNouvelleCarte;
+
+                        partie.ajoutScore(addScore);
                         score.setText(String.valueOf(partie.getScore()));
 
                         if (main.getNbCartes() == main.getSeuilPige()) {
@@ -300,6 +308,11 @@ public class MainActivity extends AppCompatActivity {
                     retourArriere();
                 }
             }
+        }
+
+        @Override
+        public void onChronometerTick(Chronometer chronometer) {
+            tempsEcoule++;
         }
     }
 
