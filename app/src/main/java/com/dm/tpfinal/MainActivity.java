@@ -165,6 +165,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        dbInstance.connecterBD();
+        dbInstance.nouvellePartie();
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
         dbInstance.deconnecterBD();
@@ -249,13 +256,18 @@ public class MainActivity extends AppCompatActivity {
 
                         // Vérification d'un coup possible après pige
                         if (!partie.isCoupPossible(main)) {
-                            if (main.getNbCartes() == 0)
+
+                            // Mesure préventive pour éviter des crashs inexpliqués (la DB semble se fermer au cours de la partie)
+                            if (!dbInstance.getDatabase().isOpen()) {
+                                dbInstance.connecterBD();
+                            }
+
+                            if (main.getNbCartes() == 0) {
                                 // Si aucun coup possible car la main est vide, c'est une victoire
                                 victoire = true;
                                 record = false;
 
-                            if (!dbInstance.getDatabase().isOpen()) {
-                                dbInstance.connecterBD();
+                                dbInstance.nouvelleVictoire();
                             }
 
                             int meilleurScore = dbInstance.recupererScore();
@@ -381,6 +393,8 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressLint("ClickableViewAccessibility")
     public CarteView insererCarteMain(Carte c) {
+        // On utilise le modèle pour la logique des cartes, mais on a besoin de cette méthode
+        // interne à l'activité pour représenter l'insertion de manière graphique
 
         main.ajouterCarte(c);
         CarteView carteView = new CarteView(this, c);

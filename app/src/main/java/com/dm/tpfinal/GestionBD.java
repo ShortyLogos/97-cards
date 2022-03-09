@@ -30,7 +30,7 @@ public class GestionBD extends SQLiteOpenHelper {
                 "nb_victoire INTEGER)");
 
         ContentValues cv = new ContentValues();
-        cv.put("meilleur_score", 5);
+        cv.put("meilleur_score", 0);
         cv.put("nb_partie", 0);
         cv.put("nb_victoire", 0);
 
@@ -50,14 +50,28 @@ public class GestionBD extends SQLiteOpenHelper {
     }
 
     // Méthode pour récupérer nombre de parties
+    public int recupererNbPartie() {
+        int nb = 0;
+
+        Cursor cursor = database.rawQuery("SELECT nb_partie FROM joueur", null);
+        cursor.moveToNext();
+
+        nb = cursor.getInt(0);
+        cursor.close();
+        return  nb;
+    }
 
     // Méthode pour récupérer nombre de victoires
+    public int recupererNbVictoire() {
+        int nb = 0;
 
-    // Méthode pour remplacer meilleur score
-//    public void changerScore(int nouveauScore) {
-//        String[] tab = {String.valueOf(nouveauScore)};
-//        Cursor cursor = database.rawQuery("UPDATE joueur SET meilleur_score =? WHERE id=1", tab);
-//    }
+        Cursor cursor = database.rawQuery("SELECT nb_victoire FROM joueur", null);
+        cursor.moveToNext();
+
+        nb = cursor.getInt(0);
+        cursor.close();
+        return  nb;
+    }
 
     public boolean changerScore(int nouveauScore) {
         ContentValues cv = new ContentValues();
@@ -68,8 +82,28 @@ public class GestionBD extends SQLiteOpenHelper {
     }
 
     // Méthode pour ajouter une partie au nombre de parties jouées
+    public boolean nouvellePartie() {
+        int p = recupererNbPartie();
+        p++;
+
+        ContentValues cv = new ContentValues();
+        cv.put("nb_partie", p);
+        database.update("joueur", cv, "_id = 1", null);
+
+        return true;
+    }
 
     // Méthode pour ajouter une victoire dans la base de données
+    public boolean nouvelleVictoire() {
+        int v = recupererNbVictoire();
+        v++;
+
+        ContentValues cv = new ContentValues();
+        cv.put("nb_victoire", v);
+        database.update("joueur", cv, "_id = 1", null);
+
+        return true;
+    }
 
     public void connecterBD() { database = this.getWritableDatabase(); }
 

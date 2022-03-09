@@ -16,7 +16,7 @@
         android:rotationX="15"
         android:rotationY="0"
         android:shadowColor="#000000"
-        android:text="97 cards!!"
+        android:text="Cardflip!!"
         android:textColor="@color/info"
         android:textSize="64sp"
         android:textStyle="bold"
