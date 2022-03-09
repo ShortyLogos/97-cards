@@ -1,5 +1,6 @@
 package com.dm.tpfinal;
 
+import java.util.ArrayList;
 import java.util.Vector;
 
 public class Main {
@@ -41,6 +42,24 @@ public class Main {
     public void retirerCarte(Carte c) {
         main.remove(c);
         nbCartes = main.size();
+    }
+
+    public ArrayList<Carte> refaireMain(Jeu jeu) {
+        ArrayList<Carte> cartes = new ArrayList<>();
+
+        while (getNbCartes() < getLimite()) {
+
+            if (jeu.getNbCartes() > 0) {
+                Carte c = jeu.pigerCarte();
+                ajouterCarte(c);    // On ajoute la carte à la main
+                cartes.add(c);      // On l'ajoute au ArrayList retourné à vue pour le pendant graphique
+            }
+            else {
+                break;
+            }
+        }
+
+        return cartes;
     }
 
 }

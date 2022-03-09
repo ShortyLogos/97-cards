@@ -26,6 +26,7 @@ import android.widget.Chronometer;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Vector;
 
 public class MainActivity extends AppCompatActivity {
@@ -396,7 +397,6 @@ public class MainActivity extends AppCompatActivity {
         // On utilise le modèle pour la logique des cartes, mais on a besoin de cette méthode
         // interne à l'activité pour représenter l'insertion de manière graphique
 
-        main.ajouterCarte(c);
         CarteView carteView = new CarteView(this, c);
         carteView.setOnTouchListener(ec);
 
@@ -414,16 +414,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void refaireMain() {
+        // On refait le plein de cartes dans la logique du jeu
+        // et on retourne un ArrayList d'objets Carte à passer à la vue
+        ArrayList<Carte> cartes = main.refaireMain(jeu);
 
-        while (main.getNbCartes() < main.getLimite()) {
-
-            if (jeu.getNbCartes() > 0) {
-                Carte c = jeu.pigerCarte();
-                insererCarteMain(c);
-            }
-            else {
-                break;
-            }
+        // Mise à jour de la zone Main du côté de la vue
+        for (Carte c : cartes) {
+            insererCarteMain(c);
         }
 
         nbCartes.setText(String.valueOf(jeu.getNbCartes()));
