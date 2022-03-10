@@ -255,6 +255,7 @@ public class MainActivity extends AppCompatActivity {
                         partie.ajoutScore(addScore);
                         score.setText(String.valueOf(partie.getScore()));
 
+
                         // On refait la main au besoin
                         if (main.getNbCartes() == main.getSeuilPige()) {
                             refaireMain();
@@ -437,14 +438,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void retourArriere() {
+        retourPossible = false;
+        partie.setSequence(0);
+
         Carte carteJouee = partie.getCarteJouee();
 
         remplacerCarte(dernierePile, cvSurPile, indexCartePile);
         pileActive.setCarteActive(cvSurPile.getCarte());
+        main.ajouterCarte(carteJouee);
         CarteView carteView = insererCarteMain(carteJouee);
-
-        partie.setSequence(0);
-        retourPossible = false;
     }
 }
 
