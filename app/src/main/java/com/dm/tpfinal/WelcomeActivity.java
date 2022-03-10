@@ -10,13 +10,16 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import java.text.DecimalFormat;
+
 public class WelcomeActivity extends AppCompatActivity {
 
     GestionBD dbInstance;
+    Button btnJouer;
     TextView meilleurScore;
     TextView nbPartie;
     TextView nbVictoire;
-    Button btnJouer;
+    TextView ratioPV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,10 +28,11 @@ public class WelcomeActivity extends AppCompatActivity {
 
         dbInstance = GestionBD.getInstance(this);
 
+        btnJouer = findViewById(R.id.btnJouer);
         meilleurScore = findViewById(R.id.meilleurScore);
         nbPartie = findViewById(R.id.nbPartie);
         nbVictoire = findViewById(R.id.nbVictoire);
-        btnJouer = findViewById(R.id.btnJouer);
+        ratioPV = findViewById(R.id.ratioPV);
 
         Ecouteur ec = new Ecouteur();
 
@@ -43,9 +47,15 @@ public class WelcomeActivity extends AppCompatActivity {
         int score = dbInstance.recupererScore();
         int partie = dbInstance.recupererNbPartie();
         int victoire = dbInstance.recupererNbVictoire();
+        double pv = (victoire * 100.0)/partie;  // Calcul du ratio partie/victoire en %
+        DecimalFormat df = new DecimalFormat(".00");
+        String ratio = df.format(pv) + "%";
+
         meilleurScore.setText(String.valueOf(score));
         nbPartie.setText(String.valueOf(partie));
         nbVictoire.setText(String.valueOf(victoire));
+        ratioPV.setText(ratio);
+
     }
 
     @Override

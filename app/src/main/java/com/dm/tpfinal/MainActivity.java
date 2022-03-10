@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
         jeu = new Jeu(97, this);
         valeurLimite = jeu.getNbInitial() + 1;
 
-        // Création des piles avec leur carte initiale respective
+        // Création des piles dans la logique avec leur carte initiale respective
         pileAsc1 = new Pile(true, new Carte(0));
         pileAsc2 = new Pile(true, new Carte(0));
         pileDes1 = new Pile(false, new Carte(valeurLimite));
@@ -130,12 +130,11 @@ public class MainActivity extends AppCompatActivity {
         main = new Main(8);
 
         // Distribution des 8 cartes aléatoires de départ
-        refaireMain();
+        refaireMain();  // Méthode de l'Activité qui appelle une méthode de logique + gestion de la vue
 
         // Affichage du nombre de cartes restantes du Jeu
         nbCartes.setText(String.valueOf(jeu.getNbCartes()));
 
-        // Création de l'écouteur
         ec = new Ecouteur();
 
         // Inscription des sources à l'écouteur
@@ -227,6 +226,8 @@ public class MainActivity extends AppCompatActivity {
                         LinearLayout p = (LinearLayout)carte.getParent(); // Récupère le parent conteneur d'origine
                         p.removeView(carte); // Enlève la carte du LinearLayout d'origine (ici la rangée correspondante dans la main)
 
+                        // On récupère l'index du CarteView/TextView puisque les LinearLayout de pile contiennent également
+                        // des ImageView et on veut garder la structure des éléments graphiques intacte
                         for (int i = 0; i < dernierePile.getChildCount(); i++) {
                             if (dernierePile.getChildAt(i) instanceof TextView) {
                                 View v = dernierePile.getChildAt(i);
@@ -234,9 +235,11 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
 
+                        // On remplace dans la vue les CarteView pour qu'elles correspondent à la logique du jeu
                         remplacerCarte(dernierePile, carte, indexCartePile);
-                        carte.setOnTouchListener(null);
+                        carte.setOnTouchListener(null); // On ne doit pas pouvoir dragger la carte qu'on vient de déposer.
 
+                        // Vérification d'un retour possible après un coup
                         retourPossible = partie.isRetourPossible(carte.getCarte(), pileActive.getCarteActive(), pileActive, indexCartePile);
                         if (retourPossible)
                             btnReprendre.setTextColor(getResources().getColor(R.color.boutonTexte));
@@ -244,6 +247,7 @@ public class MainActivity extends AppCompatActivity {
                             btnReprendre.setTextColor(getResources().getColor(R.color.reprendreInactif));
                         }
 
+                        // Gestion du score en fonction du temps écoulé depuis la dernière carte
                         tempsNouvelleCarte = tempsEcoule;
                         int addScore = partie.calculScore(tempsNouvelleCarte, tempsDerniereCarte);
                         tempsDerniereCarte = tempsNouvelleCarte;
@@ -251,6 +255,7 @@ public class MainActivity extends AppCompatActivity {
                         partie.ajoutScore(addScore);
                         score.setText(String.valueOf(partie.getScore()));
 
+                        // On refait la main au besoin
                         if (main.getNbCartes() == main.getSeuilPige()) {
                             refaireMain();
                         }
