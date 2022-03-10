@@ -52,7 +52,7 @@ public class Main {
             if (jeu.getNbCartes() > 0) {
                 Carte c = jeu.pigerCarte();
                 ajouterCarte(c);    // On ajoute la carte à la main
-                cartes.add(c);      // On l'ajoute au ArrayList retourné à vue pour le pendant graphique
+                cartes.add(c);      // On l'ajoute au ArrayList retourné à la vue pour le pendant graphique
             }
             else {
                 break;

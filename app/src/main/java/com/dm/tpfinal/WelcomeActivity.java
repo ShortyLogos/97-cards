@@ -49,7 +49,7 @@ public class WelcomeActivity extends AppCompatActivity {
         int victoire = dbInstance.recupererNbVictoire();
 
         String ratio = "0%";
-        if (partie > 0) {
+        if (victoire > 0) {
             double pv = (victoire * 100.0)/partie;  // Calcul du ratio partie/victoire en %
             DecimalFormat df = new DecimalFormat("0.00");
             ratio = df.format(pv) + "%";
