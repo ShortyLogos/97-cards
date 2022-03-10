@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">tpfinal</string>
+    <string name="app_name">Cardflip</string>
     <string name="victoire">Victoire !</string>
     <string name="defaite">Oh non...</string>
 </resources>

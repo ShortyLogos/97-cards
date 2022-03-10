@@ -47,9 +47,13 @@ public class WelcomeActivity extends AppCompatActivity {
         int score = dbInstance.recupererScore();
         int partie = dbInstance.recupererNbPartie();
         int victoire = dbInstance.recupererNbVictoire();
-        double pv = (victoire * 100.0)/partie;  // Calcul du ratio partie/victoire en %
-        DecimalFormat df = new DecimalFormat(".00");
-        String ratio = df.format(pv) + "%";
+
+        String ratio = "0";
+        if (partie > 0) {
+            double pv = (victoire * 100.0)/partie;  // Calcul du ratio partie/victoire en %
+            DecimalFormat df = new DecimalFormat(".00");
+            ratio = df.format(pv) + "%";
+        }
 
         meilleurScore.setText(String.valueOf(score));
         nbPartie.setText(String.valueOf(partie));
